@@ -1,31 +1,41 @@
+const express = require("express");
 
-const express = require("express");  
-// Commit: "Import express"
-
-
+const app = express();
 
 
-const app = express();  
-// Commit: "Initialize app"
+// -- ENV
+
+require("dotenv").config();
+
+
+// MIDDLEWARES
+
+app.use(express.json());
+app.use(express.urlencoded({extended:true}))
+
+// - DB
+const {connectionDB} = require("./Config/Database")
+
+
+// MODELS - IMPORTED
+const {  createRoles , getRoles , deleteRole ,updateRole} = require("./Controllers/RolesController")
+
+
+// -- USER ROLE API [ GET , POST  ]
+app.route("/").get(getRoles).post(createRoles)
+
+// -- USER ROLE API [ DELETE , UPDATE  ]
+app.route("/role/:id").delete(deleteRole).put(updateRole)
 
 
 
 
-require("dotenv").config();  
-// Commit: "Load .env variables"
 
 
 
+// -- SERVER LISTEN
+app.listen(process.env.PORT,function(){
+    console.log(`The Server is running on the port ${process.env.PORT}`)
+    connectionDB()
+})
 
-const {connectionDB} = require("./Config/Database");  
-// Commit: "Import DB connection"
-
-const userAccounts = require("./Models/UserAccount")
-
-
-
-app.listen(process.env.PORT, function() {
-    console.log("Server is running on port " + process.env.PORT);
-    connectionDB();
-});  
-// Commit: "Start server & connect DB"
